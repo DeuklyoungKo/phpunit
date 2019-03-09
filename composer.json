@@ -28,8 +28,8 @@
     "require-dev": {
         "symfony/debug-pack": "*",
         "symfony/maker-bundle": "^1.0",
+        "symfony/phpunit-bridge": "4.2.*",
         "symfony/profiler-pack": "*",
-        "symfony/test-pack": "^1.0",
         "symfony/web-server-bundle": "4.2.*"
     },
     "config": {
