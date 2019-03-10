@@ -78,10 +78,13 @@ class Enclosure
             throw new DinosaursAreRunningRampantException('Are you craaazy?!?');
         }
 
+        /*
         if (!$this->dinosaurs->contains($dinosaur)) {
             $this->dinosaurs[] = $dinosaur;
             $dinosaur->setEnclosure($this);
-        }
+        }*/
+
+        $this->dinosaurs[] = $dinosaur;
 
         return $this;
     }
@@ -98,6 +101,7 @@ class Enclosure
 
         return $this;
     }
+
 
 
     public function canAddDinosaur(Dinosaur $dinosaur): bool
@@ -145,5 +149,11 @@ class Enclosure
         }
 
         return false;
+    }
+
+
+    public function addSecurity(Security $security)
+    {
+        $this->securities[] = $security;
     }
 }

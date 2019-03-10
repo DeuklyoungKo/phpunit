@@ -11,6 +11,7 @@ namespace App\Tests\Repository;
 
 use App\Entity\Dinosaur;
 use App\Repository\DinosaurRepository;
+use App\Service\DinosaurLengthDeterminatior;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -27,6 +28,11 @@ class DinosaurRepositoryTest extends KernelTestCase
      */
     private $repository;
 
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $lengthDeterminator;
+
     public function setUp()
     {
         $kernel = self::bootKernel();
@@ -36,6 +42,8 @@ class DinosaurRepositoryTest extends KernelTestCase
                                       ->getManager();
 
         $this->repository = $this->entityManager->getRepository(Dinosaur::class);
+
+        $this->lengthDeterminator = $this->createMock(DinosaurLengthDeterminatior::class);
 
     }
     
@@ -71,9 +79,18 @@ class DinosaurRepositoryTest extends KernelTestCase
      */
     public function testItGrowsADinosaurFromASpecification(string $spec, bool $expectedIsCarnivorous)
     {
+
+        $this->lengthDeterminator
+//            ->expects($this->once())
+            ->method('getLengthFromSpecification')
+            ->with($spec)
+            ->willReturn(20);
+
+
         $dinosaur = $this->repository->growFromSpecification($spec);
 
         $this->assertSame($expectedIsCarnivorous,$dinosaur->isCarnivorous(), 'Diets do not match');
+//        $this->assertSame(0, $dinosaur->getLength());
     }
 
     public function getSpecificationTests()

@@ -35,7 +35,9 @@ class DinosaurRepository extends ServiceEntityRepository
     {
         // defaluts
         $codeName = 'InG-' . random_int(1,99999);
+
         $length = $this->lengthDeterminatior->getLengthFromSpecification($specification);
+//        $length = $this->lengthDeterminatior->getLengthFromSpecification('foo');
 
         $isCarnivorous = false;
 
