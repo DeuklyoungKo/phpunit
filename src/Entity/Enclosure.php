@@ -30,13 +30,13 @@ class Enclosure
 
     /**
      * @var Collection
-     * @ORM\OneToMany(targetEntity="App\Entity\Dinosaur", mappedBy="enclosure")
+     * @ORM\OneToMany(targetEntity="App\Entity\Dinosaur", mappedBy="enclosure", cascade={"persist", "remove"})
      */
     private $dinosaurs;
 
     /**
      * @var Collection|Security[]
-     * @ORM\OneToMany(targetEntity="App\Entity\Security", mappedBy="enclosure")
+     * @ORM\OneToMany(targetEntity="App\Entity\Security", mappedBy="enclosure", cascade={"persist", "remove"})
      */
     private $securities;
 
