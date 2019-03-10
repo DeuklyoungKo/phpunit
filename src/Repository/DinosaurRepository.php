@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Dinosaur;
+use App\Service\DinosaurLengthDeterminatior;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -14,9 +15,15 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class DinosaurRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    /**
+     * @var DinosaurLengthDeterminatior
+     */
+    private $lengthDeterminatior;
+
+    public function __construct(RegistryInterface $registry, DinosaurLengthDeterminatior $lengthDeterminatior)
     {
         parent::__construct($registry, Dinosaur::class);
+        $this->lengthDeterminatior = $lengthDeterminatior;
     }
 
     public function growVelociraptor(int $length): Dinosaur
@@ -28,7 +35,8 @@ class DinosaurRepository extends ServiceEntityRepository
     {
         // defaluts
         $codeName = 'InG-' . random_int(1,99999);
-        $length = $this->getLengthFromSpecification($specification);
+        $length = $this->lengthDeterminatior->getLengthFromSpecification($specification);
+
         $isCarnivorous = false;
 
         if (strpos($specification, 'carnivorous') !== false) {
@@ -50,30 +58,5 @@ class DinosaurRepository extends ServiceEntityRepository
         return $dinosaur;
     }
 
-
-    private function getLengthFromSpecification(string $specification): int
-    {
-        $availableLengths = [
-            'huge' => ['min' => Dinosaur::HUGE, 'max' => 100],
-            'omg' => ['min' => Dinosaur::HUGE, 'max' => 100],
-            '😱' => ['min' => Dinosaur::HUGE, 'max' => 100],
-            'large' => ['min' => Dinosaur::LARGE, 'max' => Dinosaur::HUGE - 1],
-        ];
-        $minLength = 1;
-        $maxLength = Dinosaur::LARGE - 1;
-
-        foreach (explode(' ', $specification) as $keyword) {
-            $keyword = strtolower($keyword);
-
-            if (array_key_exists($keyword, $availableLengths)) {
-                $minLength = $availableLengths[$keyword]['min'];
-                $maxLength = $availableLengths[$keyword]['max'];
-
-                break;
-            }
-        }
-
-        return random_int($minLength, $maxLength);
-    }
 
  }

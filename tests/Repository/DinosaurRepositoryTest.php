@@ -69,15 +69,9 @@ class DinosaurRepositoryTest extends KernelTestCase
     /**
      * @dataProvider getSpecificationTests
      */
-    public function testItGrowsADinosaurFromASpecification(string $spec, bool $expectedIsLarge, bool $expectedIsCarnivorous)
+    public function testItGrowsADinosaurFromASpecification(string $spec, bool $expectedIsCarnivorous)
     {
         $dinosaur = $this->repository->growFromSpecification($spec);
-
-        if ($expectedIsLarge) {
-            $this->assertGreaterThanOrEqual(Dinosaur::LARGE, $dinosaur->getLength());
-        } else {
-            $this->assertLessThan(Dinosaur::LARGE, $dinosaur->getLength());
-        }
 
         $this->assertSame($expectedIsCarnivorous,$dinosaur->isCarnivorous(), 'Diets do not match');
     }
@@ -85,33 +79,12 @@ class DinosaurRepositoryTest extends KernelTestCase
     public function getSpecificationTests()
     {
         return [
-            // specification, is large, is carnivoros
-            ['large carnivorous dinosaur', true, true],
-            'default response' => ['give me all the cookies', false, false],
-            ['large berbivore', true, false],
+            // specification, is carnivoros
+            ['large carnivorous dinosaur', true],
+            'default response' => ['give me all the cookies', false],
+            ['large berbivore', false],
         ];
     }
 
 
-    /**
-     * @dataProvider getHugeDinosaurSpecTests
-     */
-    public function testItGrowsAHugeDinosaur(string $specifcation)
-    {
-        $dinosaur = $this->repository->growFromSpecification($specifcation);
-
-        $this->assertGreaterThanOrEqual(Dinosaur::HUGE, $dinosaur->getLength());
-    }
-
-
-    public function getHugeDinosaurSpecTests()
-    {
-        return [
-            ['huge dinosaur'],
-            ['huge dino'],
-            ['huge'],
-            ['OMG'],
-            ['😱'],
-        ];
-    }
 }
