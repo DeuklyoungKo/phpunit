@@ -11,6 +11,8 @@ namespace App\Tests\Service;
 
 use App\Entity\Dinosaur;
 use App\Entity\Security;
+use App\Repository\DinosaurRepository;
+use App\Service\EnclosureBuilderService;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -28,15 +30,26 @@ class EnclosureBuilderServiceIntegrationTest extends KernelTestCase
     public function testItBuildsEnclosureWithDefaltSpecification()
     {
 
-
-
         // returns the real and unchanged service container
         $container = self::$kernel->getContainer();
 
         // gets the special container that allows fetching private services
         $container = self::$container;
 
-        $enclosureBuilderService = self::$container->get('App\Service\EnclosureBuilderService');
+        /** @var EnclosureBuilderService $enclosureBuilderService */
+//        $enclosureBuilderService = self::$container->get('App\Service\EnclosureBuilderService');
+
+        $dinoRepository = $this->createMock(DinosaurRepository::class);
+        $dinoRepository->expects($this->any())
+            ->method('growFromSpecification')
+            ->willReturnCallback(function($spec){
+                return new Dinosaur();
+            });
+
+        $enclosureBuilderService = new EnclosureBuilderService(
+            $this->getEntityManager(),
+            $dinoRepository
+        );
 
         $enclosureBuilderService->buildEnclosure();
 
