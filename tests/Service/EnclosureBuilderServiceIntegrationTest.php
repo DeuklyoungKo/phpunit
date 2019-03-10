@@ -10,9 +10,8 @@ namespace App\Tests\Service;
 
 
 use App\Entity\Dinosaur;
-use App\Entity\Enclosure;
 use App\Entity\Security;
-use App\Service\EnclosureBuilderService;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -22,11 +21,7 @@ class EnclosureBuilderServiceIntegrationTest extends KernelTestCase
     {
         self::bootKernel();
 
-        $this->truncateEntities([
-            Enclosure::class,
-            Security::class,
-            Dinosaur::class,
-        ]);
+        $this->truncateEntities();
     }
 
 
@@ -68,26 +63,10 @@ class EnclosureBuilderServiceIntegrationTest extends KernelTestCase
     }
 
     // just copy this method! :)
-    private function truncateEntities(array $entities)
+    private function truncateEntities()
     {
-        $connection = $this->getEntityManager()->getConnection();
-        $databasePlatform = $connection->getDatabasePlatform();
-
-        if ($databasePlatform->supportsForeignKeyConstraints()) {
-            $connection->query('SET FOREIGN_KEY_CHECKS=0');
-        }
-
-        foreach ($entities as $entity) {
-            $query = $databasePlatform->getTruncateTableSQL(
-                $this->getEntityManager()->getClassMetadata($entity)->getTableName()
-            );
-
-            $connection->executeUpdate($query);
-        }
-
-        if ($databasePlatform->supportsForeignKeyConstraints()) {
-            $connection->query('SET FOREIGN_KEY_CHECKS=1');
-        }
+        $purger = new ORMPurger($this->getEntityManager());
+        $purger->purge();
     }
 
     /**
